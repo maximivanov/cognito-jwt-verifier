@@ -1,0 +1,14 @@
+node_modules/*
+serverless.yml
+wrangler.toml
+*.log
+worker/
+dist/
+.idea
+coverage
+.DS_Store
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

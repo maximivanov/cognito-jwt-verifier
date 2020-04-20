@@ -1,0 +1,5 @@
+file:
+  - tests/bootstrap.test.js
+ui: bdd
+spec:
+  - tests/**/*.js

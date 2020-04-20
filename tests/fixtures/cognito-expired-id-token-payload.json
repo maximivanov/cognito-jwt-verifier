@@ -1,0 +1,13 @@
+{
+  "at_hash": "09-WxMYT8avN9as_XvEz-w",
+  "sub": "24e26910-e7b9-4aad-a994-387942f164e7",
+  "aud": "5ra91i9p4trq42m2vnjs0pv06q",
+  "token_use": "id",
+  "auth_time": 1586566152,
+  "iss": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_PDsy6i0Bf",
+  "name": "Max Ivanov",
+  "cognito:username": "24e26910-e7b9-4aad-a994-387942f164e7",
+  "exp": 1586569752,
+  "iat": 1586566152,
+  "email": "max@southlane.com"
+}
