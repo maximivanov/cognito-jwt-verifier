@@ -6,32 +6,24 @@ const {
 } = require('jose')
 const jwks = require('./util/jwks')
 const { requireString } = require('./util/validators')
+const JwtClaimValidationError = require('./errors/jwt-claim-validation-error')
 
-function isProvider(provider) {
-  return !!provider && !!provider.keyStoreUrl && !!provider.joseOptions
-}
-
-function getJoseOptions({ provider, tokenType }) {
-  const defaultOptions = {
-    profile: tokenType === 'id' ? 'id_token' : undefined,
-  }
-
-  const providerOptions = provider.joseOptions
-
-  return Object.assign({}, defaultOptions, providerOptions)
-}
-
-function verifierFactory({ provider, tokenType }) {
-  if (!isProvider(provider)) {
-    throw new TypeError('"provider" must be an instance of a provider')
-  }
-
+function verifierFactory({ region, userPoolId, appClientId, tokenType }) {
+  requireString(region, 'region')
+  requireString(userPoolId, 'userPoolId')
+  requireString(appClientId, 'appClientId')
   if (!['id', 'access'].includes(tokenType)) {
     throw new TypeError('"tokenType" must be either "id" or "access"')
   }
 
+  const keyStoreUrl = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`
+  const joseOptions = {
+    profile: tokenType === 'id' ? 'id_token' : undefined,
+    audience: appClientId,
+    issuer: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,
+  }
+
   let keyStore
-  let verificationOptions = getJoseOptions({ provider, tokenType })
 
   return {
     verify: async (token) => {
@@ -39,29 +31,32 @@ function verifierFactory({ provider, tokenType }) {
 
       const isCachedKeyStore = keyStore !== undefined
       if (!isCachedKeyStore) {
-        keyStore = await jwks.fetchKeyStore(provider.keyStoreUrl)
+        keyStore = await jwks.fetchKeyStore(keyStoreUrl)
       }
 
       let payload
 
       try {
-        payload = JWT.verify(token, keyStore, verificationOptions)
+        payload = JWT.verify(token, keyStore, joseOptions)
       } catch (e) {
         if (
           e instanceof JOSEError &&
           e.code === 'ERR_JWKS_NO_MATCHING_KEY' &&
           isCachedKeyStore
         ) {
-          keyStore = await jwks.fetchKeyStore(provider.keyStoreUrl)
+          keyStore = await jwks.fetchKeyStore(keyStoreUrl)
 
-          payload = JWT.verify(token, keyStore, verificationOptions)
+          payload = JWT.verify(token, keyStore, joseOptions)
         }
 
         throw e
       }
 
-      if (provider.verifyClaims) {
-        provider.verifyClaims(payload, { tokenType })
+      if (!payload.token_use || payload.token_use !== tokenType) {
+        throw new JwtClaimValidationError(
+          'token_use',
+          `expected "${tokenType}", got "${payload.token_use}"`,
+        )
       }
 
       return payload

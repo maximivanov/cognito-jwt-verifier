@@ -5,6 +5,7 @@ wrangler.toml
 worker/
 dist/
 .idea
+.nyc_output
 coverage
 .DS_Store
 .vscode/*
