@@ -6,7 +6,38 @@ const {
 } = require('jose')
 const jwks = require('./util/jwks')
 const { requireString } = require('./util/validators')
-const JwtClaimValidationError = require('./errors/jwt-claim-validation-error')
+const JwtCognitoClaimValidationError = require('./errors/jwt-cognito-claim-validation-error')
+const JwtVerificationError = require('./errors/jwt-verification-error')
+
+function handleVerificationError(e) {
+  if (
+    e instanceof JOSEError &&
+    ['ERR_JWT_CLAIM_INVALID', 'ERR_JWT_EXPIRED', 'ERR_JWT_MALFORMED'].includes(
+      e.code,
+    )
+  ) {
+    throw new JwtVerificationError(e)
+  }
+}
+
+function isNoMatchingKeyError(e, isCachedKeyStore) {
+  return (
+    e instanceof JOSEError &&
+    e.code === 'ERR_JWKS_NO_MATCHING_KEY' &&
+    isCachedKeyStore
+  )
+}
+
+function validateTokenUseClaim(payload, tokenType) {
+  if (!payload.token_use || payload.token_use !== tokenType) {
+    const originalError = new JwtCognitoClaimValidationError(
+      'token_use',
+      `expected "${tokenType}", got "${payload.token_use}"`,
+    )
+
+    throw new JwtVerificationError(originalError)
+  }
+}
 
 function verifierFactory({ region, userPoolId, appClientId, tokenType }) {
   requireString(region, 'region')
@@ -39,25 +70,24 @@ function verifierFactory({ region, userPoolId, appClientId, tokenType }) {
       try {
         payload = JWT.verify(token, keyStore, joseOptions)
       } catch (e) {
-        if (
-          e instanceof JOSEError &&
-          e.code === 'ERR_JWKS_NO_MATCHING_KEY' &&
-          isCachedKeyStore
-        ) {
+        if (isNoMatchingKeyError(e, isCachedKeyStore)) {
           keyStore = await jwks.fetchKeyStore(keyStoreUrl)
 
-          payload = JWT.verify(token, keyStore, joseOptions)
+          try {
+            payload = JWT.verify(token, keyStore, joseOptions)
+          } catch (eAfterRefetch) {
+            handleVerificationError(e)
+
+            throw e
+          }
         }
+
+        handleVerificationError(e)
 
         throw e
       }
 
-      if (!payload.token_use || payload.token_use !== tokenType) {
-        throw new JwtClaimValidationError(
-          'token_use',
-          `expected "${tokenType}", got "${payload.token_use}"`,
-        )
-      }
+      validateTokenUseClaim(payload, tokenType)
 
       return payload
     },
