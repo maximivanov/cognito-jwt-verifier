@@ -50,7 +50,7 @@ function verifierFactory({ region, userPoolId, appClientId, tokenType }) {
   const keyStoreUrl = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`
   const joseOptions = {
     profile: tokenType === 'id' ? 'id_token' : undefined,
-    audience: appClientId,
+    audience: tokenType === 'id' ? appClientId : undefined,
     issuer: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,
   }
 
