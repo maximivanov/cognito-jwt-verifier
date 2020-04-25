@@ -2,6 +2,20 @@
   "name": "@southlane/cognito-jwt-verifier",
   "version": "0.1.1",
   "description": "Decode and verify JWT tokens issued by AWS Cognito.",
+  "keywords": [
+    "aws",
+    "amazon",
+    "cognito",
+    "jwt",
+    "jwks",
+    "access_token",
+    "access token",
+    "id_token",
+    "id token",
+    "decode",
+    "verify",
+    "validate"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "mocha --config tests/.mocharc.yml",
@@ -15,6 +29,9 @@
     "check-language": "write-good *.md --no-passive",
     "publish": "git push --tags && npm publish --access public"
   },
+  "files": [
+    "src/**/*.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/south-lane/cognito-jwt-verifier"
