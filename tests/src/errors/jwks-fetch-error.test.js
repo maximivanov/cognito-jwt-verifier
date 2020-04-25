@@ -1,3 +1,5 @@
+'use strict'
+
 const expect = require('chai').expect
 const { randomWord } = require('../../util')
 const JwksFetchError = require('../../../src/errors/jwks-fetch-error')

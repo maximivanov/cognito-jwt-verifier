@@ -1,3 +1,5 @@
+'use strict'
+
 const https = require('https')
 const JwksFetchError = require('../errors/jwks-fetch-error')
 const { JWKS } = require('jose')

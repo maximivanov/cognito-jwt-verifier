@@ -1,3 +1,5 @@
+'use strict'
+
 const https = require('https')
 const sinon = require('sinon')
 const expect = require('chai').expect

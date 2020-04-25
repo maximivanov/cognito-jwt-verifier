@@ -1,3 +1,5 @@
+'use strict'
+
 const expect = require('chai').expect
 const { randomWord } = require('../../util')
 const JwksNoMatchingKeyError = require('../../../src/errors/jwks-no-matching-key-error')
