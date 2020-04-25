@@ -6,11 +6,10 @@ with minimal npm dependencies.
 Why this library? I couldn't find anything checking
 all the boxes for me:
 
-- minimal dependencies (`cognito-jwt-verifier` depends on [Jose](https://github.com/panva/jose),
-  which itself has 1 dependency)
+- minimal dependencies
 - framework agnostic
-- with tests
-- caching JWKS (public keys)
+- JWKS (public keys) caching
+- test coverage
 
 ## Getting Started
 
@@ -41,6 +40,7 @@ const {
   errors: { JwtVerificationError, JwksNoMatchingKeyError },
 } = require('cognito-jwt-verifier')
 
+// get a verifier instance. Put your config values here.
 const verifier = verifierFactory({
   region: 'us-east-1',
   userPoolId: 'us-east-1_PDsy6i0Bf',
@@ -141,14 +141,28 @@ Make sure there are no known vulnerabilities in dependencies.
 npm run audit-security
 ```
 
-## Built With / Dependencies
+## Built With
 
 - [Jose](https://github.com/panva/jose) - "JSON Web Almost Everything" -
   JWA, JWS, JWE, JWK, JWT, JWKS for Node.js with minimal dependencies
+- [Mocha](https://github.com/mochajs/mocha),
+  [Sinon](https://github.com/sinonjs/sinon),
+  [Chai](https://github.com/chaijs/chai),
+  [nyc](https://github.com/istanbuljs/nyc),
+  [mock-req](https://github.com/diachedelic/mock-req),
+  [mock-res](https://github.com/diachedelic/mock-res) - Testing, Mocking & Coverage
+- [ESLint](https://github.com/eslint/eslint),
+  [Prettier](https://github.com/prettier/prettier),
+  [markdown-spellcheck](https://github.com/lukeapage/node-markdown-spellcheck),
+  [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli) -
+  Linting & Formatting
+- [commitlint](https://github.com/conventional-changelog/commitlint),
+  [Husky](https://github.com/typicode/husky) - Commit Message Linting
+- [audit-ci](https://github.com/IBM/audit-ci) - Package Security Audit
 
 TODO text dependency tree
 
-## Getting help
+## Getting Help
 
 If you have questions, concerns, bug reports, etc, please file an issue in this
 repository's Issue Tracker.
@@ -173,3 +187,7 @@ who participated in this project.
 
 This project is licensed under the MIT License -
 see the [LICENSE.md](LICENSE.md) file for details
+
+## Credits and references
+
+- [Verifying a JSON Web Token](https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html)
