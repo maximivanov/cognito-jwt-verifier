@@ -105,7 +105,9 @@ describe('verifier', async function () {
     it('rejects on key not found in key set (w/ empty cache)', async function () {
       const verifier = getVerifier()
 
-      jwksFetchKeyStoreStub = sinon.stub(jwks, 'fetchKeyStore').returns({})
+      const jwksFetchKeyStoreStub = sinon
+        .stub(jwks, 'fetchKeyStore')
+        .returns({})
       const jwtVerifyStub = sinon
         .stub(JWT, 'verify')
         .throws(new JWKSNoMatchingKey())
@@ -132,7 +134,7 @@ describe('verifier', async function () {
 
       sinon.restore()
 
-      jwksFetchKeyStoreStub = sinon.stub(jwks, 'fetchKeyStore')
+      const jwksFetchKeyStoreStub = sinon.stub(jwks, 'fetchKeyStore')
       sinon.stub(JWT, 'verify').returns({ token_use: 'id' })
 
       try {
@@ -155,8 +157,12 @@ describe('verifier', async function () {
 
       sinon.restore()
 
-      jwtVerifyStub = sinon.stub(JWT, 'verify').throws(new JWKSNoMatchingKey())
-      jwksFetchKeyStoreStub = sinon.stub(jwks, 'fetchKeyStore').returns({})
+      const jwtVerifyStub = sinon
+        .stub(JWT, 'verify')
+        .throws(new JWKSNoMatchingKey())
+      const jwksFetchKeyStoreStub = sinon
+        .stub(jwks, 'fetchKeyStore')
+        .returns({})
 
       try {
         await verifier.verify('some-token')
