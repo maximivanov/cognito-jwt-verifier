@@ -1,15 +1,11 @@
 node_modules/*
-serverless.yml
-wrangler.toml
-*.log
-worker/
-dist/
-.idea
-.nyc_output
-coverage
+
 .DS_Store
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+
+# Test coverage output
+.nyc_output/
+coverage/
+
+# IDE configuration
+.idea/
+.vscode/

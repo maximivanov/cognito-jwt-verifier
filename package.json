@@ -1,5 +1,5 @@
 {
-  "name": "cognito-jwt-verifier",
+  "name": "@southlane/cognito-jwt-verifier",
   "version": "0.1.0",
   "description": "Decode and verify JWT tokens issued by AWS Cognito.",
   "main": "index.js",
@@ -14,7 +14,10 @@
     "audit-security": "audit-ci --config ./audit-ci.json",
     "check-language": "write-good *.md --no-passive"
   },
-  "repository": "south-lane/cognito-jwt-verifier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/south-lane/cognito-jwt-verifier"
+  },
   "author": "Max Ivanov",
   "license": "MIT",
   "bugs": {
