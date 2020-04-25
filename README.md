@@ -38,7 +38,7 @@ Now you can programmatically verify issued ID and access tokens:
 const {
   verifierFactory,
   errors: { JwtVerificationError, JwksNoMatchingKeyError },
-} = require('cognito-jwt-verifier')
+} = require('@southlane/cognito-jwt-verifier')
 
 // get a verifier instance. Put your config values here.
 const verifier = verifierFactory({
