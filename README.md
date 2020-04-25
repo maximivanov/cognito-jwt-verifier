@@ -163,7 +163,7 @@ npm run audit-security
 ### Dependency Graph
 
 ```text
-@southlane/cognito-jwt-verifier@0.1.0 (2 deps, 296.51kb, 140 files)
+@southlane/cognito-jwt-verifier@0.1.2 (2 deps, 280.94kb, 120 files)
 ╰─┬ jose@1.26.0 (1 dep, 266.29kb, 108 files)
   ╰── @panva/asn1.js@1.0.0 (45.74kb, 18 files)
 ```
