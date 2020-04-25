@@ -28,7 +28,7 @@ describe('util/jwks', async function () {
           expect(e).to.be.an.instanceOf(JwksFetchError)
           expect(e.message).to.match(
             new RegExp(
-              `Failed to fetch key store JSON: HTTP status code ${test.code}`,
+              `Failed to fetch key set JSON: HTTP status code ${test.code}`,
             ),
           )
         }
@@ -47,7 +47,7 @@ describe('util/jwks', async function () {
         .catch((e) => {
           expect(e).to.be.an.instanceOf(JwksFetchError)
           expect(e.message).to.match(
-            new RegExp(`Failed to fetch key store JSON: custom`),
+            new RegExp(`Failed to fetch key set JSON: custom`),
           )
         })
 
@@ -101,7 +101,7 @@ describe('util/jwks', async function () {
       await promise
     })
 
-    it('returns a key store object', async function () {
+    it('returns a key set object', async function () {
       const req = new MockReq()
       const res = new MockRes()
 

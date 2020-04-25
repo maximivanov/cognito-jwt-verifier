@@ -6,8 +6,11 @@ const {
 } = require('jose')
 const jwks = require('./util/jwks')
 const { requireString } = require('./util/validators')
-const JwtCognitoClaimValidationError = require('./errors/jwt-cognito-claim-validation-error')
-const JwtVerificationError = require('./errors/jwt-verification-error')
+const {
+  JwtCognitoClaimValidationError,
+  JwtVerificationError,
+  JwksNoMatchingKeyError,
+} = require('./errors')
 
 function handleVerificationError(e) {
   if (
@@ -18,14 +21,16 @@ function handleVerificationError(e) {
   ) {
     throw new JwtVerificationError(e)
   }
+
+  if (isNoMatchingKeyError(e)) {
+    throw new JwksNoMatchingKeyError(e)
+  }
+
+  throw e
 }
 
-function isNoMatchingKeyError(e, isCachedKeyStore) {
-  return (
-    e instanceof JOSEError &&
-    e.code === 'ERR_JWKS_NO_MATCHING_KEY' &&
-    isCachedKeyStore
-  )
+function isNoMatchingKeyError(e) {
+  return e instanceof JOSEError && e.code === 'ERR_JWKS_NO_MATCHING_KEY'
 }
 
 function validateTokenUseClaim(payload, tokenType) {
@@ -70,21 +75,17 @@ function verifierFactory({ region, userPoolId, appClientId, tokenType }) {
       try {
         payload = JWT.verify(token, keyStore, joseOptions)
       } catch (e) {
-        if (isNoMatchingKeyError(e, isCachedKeyStore)) {
+        if (isNoMatchingKeyError(e) && isCachedKeyStore) {
           keyStore = await jwks.fetchKeyStore(keyStoreUrl)
 
           try {
             payload = JWT.verify(token, keyStore, joseOptions)
           } catch (eAfterRefetch) {
             handleVerificationError(e)
-
-            throw e
           }
         }
 
         handleVerificationError(e)
-
-        throw e
       }
 
       validateTokenUseClaim(payload, tokenType)
