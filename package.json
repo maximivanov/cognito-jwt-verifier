@@ -12,7 +12,8 @@
     "lint:spellcheck": "mdspell *.md --ignore-numbers --report",
     "lint": "run-p lint:*",
     "audit-security": "audit-ci --config ./audit-ci.json",
-    "check-language": "write-good *.md --no-passive"
+    "check-language": "write-good *.md --no-passive",
+    "publish": "git push --tags && npm publish --access public"
   },
   "repository": {
     "type": "git",
