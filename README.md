@@ -148,6 +148,11 @@ npm run audit-security
 
 TODO text dependency tree
 
+## Getting help
+
+If you have questions, concerns, bug reports, etc, please file an issue in this
+repository's Issue Tracker.
+
 ## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of
