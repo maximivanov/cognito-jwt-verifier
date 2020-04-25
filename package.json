@@ -1,6 +1,6 @@
 {
   "name": "cognito-jwt-verifier",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Decode and verify JWT tokens issued by AWS Cognito.",
   "main": "index.js",
   "scripts": {
@@ -9,10 +9,10 @@
     "format": "prettier --write '**/*.{js,css,json,md}'",
     "lint:js": "eslint \"**/*.{js,jsx,}\"",
     "lint:markdown": "markdownlint *.md",
-    "lint:grammar": "write-good *.md --no-passive",
     "lint:spellcheck": "mdspell *.md --ignore-numbers --report",
     "lint": "run-p lint:*",
-    "audit-security": "audit-ci --config ./audit-ci.json"
+    "audit-security": "audit-ci --config ./audit-ci.json",
+    "check-language": "write-good *.md --no-passive"
   },
   "repository": "south-lane/cognito-jwt-verifier",
   "author": "Max Ivanov",
