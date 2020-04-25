@@ -160,7 +160,13 @@ npm run audit-security
   [Husky](https://github.com/typicode/husky) - Commit Message Linting
 - [audit-ci](https://github.com/IBM/audit-ci) - Package Security Audit
 
-TODO text dependency tree
+### Dependency Graph
+
+```text
+@southlane/cognito-jwt-verifier@0.1.0 (2 deps, 296.51kb, 140 files)
+╰─┬ jose@1.26.0 (1 dep, 266.29kb, 108 files)
+  ╰── @panva/asn1.js@1.0.0 (45.74kb, 18 files)
+```
 
 ## Getting Help
 
@@ -176,12 +182,6 @@ conduct, and the process for submitting pull requests to us.
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available,
 see the [releases on this repository](https://github.com/south-lane/cognito-jwt-verifier/releases).
-
-## Authors
-
-See the list of
-[contributors](https://github.com/south-lane/cognito-jwt-verifier/contributors)
-who participated in this project.
 
 ## License
 
