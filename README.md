@@ -20,7 +20,7 @@ all the boxes for me:
 ### Installing
 
 ```sh
-npm i cognito-jwt-verifier
+npm i @southlane/cognito-jwt-verifier
 ```
 
 ## Usage
