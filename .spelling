@@ -22,3 +22,11 @@ perf
 TODO
 SemVer
 LICENSE.md
+Sinon
+Chai
+nyc
+mock-req
+mock-res
+ESLint
+markdownlint-cli
+commitlint
