@@ -1,0 +1,159 @@
+# cognito-jwt-verifier
+
+Verify ID and access JWT tokens from AWS Cognito in your node/Lambda backend
+with minimal npm dependencies.
+
+Why this library? I couldn't find anything checking
+all the boxes for me:
+
+- minimal dependencies (`cognito-jwt-verifier` depends on [Jose](https://github.com/panva/jose),
+  which itself has 1 dependency)
+- framework agnostic
+- with tests
+- caching JWKS (public keys)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js version >=10.13.0
+
+### Installing
+
+```sh
+npm i cognito-jwt-verifier
+```
+
+## Usage
+
+Assuming you've set up a Cognito User Pool and an Application Client at AWS,
+you can verify issued ID and access tokens:
+
+```js
+const { verifierFactory, errors: jwtErrors } = require('cognito-jwt-verifier')
+const verifier = verifierFactory({
+  region: 'us-east-1',
+  userPoolId: 'us-east-1_PDsy6i0Bf',
+  appClientId: '5ra91i9p4trq42m2vnjs0pv06q',
+  tokenType: 'access',
+})
+
+...
+
+// you can decode this token at jwt.io
+const expiredToken = 'eyJraWQiOiI0UFFoK0JaVExkRVFkeUM2b0VheVJDckVjblFDSXhqbFZFbTFVd2RhZ2ZNPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiQlNFSWQ1bkYyN3pNck45QkxYLVRfQSIsInN1YiI6IjI0ZTI2OTEwLWU3YjktNGFhZC1hOTk0LTM4Nzk0MmYxNjRlNyIsImF1ZCI6IjVyYTkxaTlwNHRycTQybTJ2bmpzMHB2MDZxIiwiZXZlbnRfaWQiOiJiNmQ3YTYyZC01NGRhLTQ5ZTYtYTgzOS02NjUwNmYwYzIxYjUiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTU4NzMxMTgzOCwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfUERzeTZpMEJmIiwibmFtZSI6Ik1heCBJdmFub3YiLCJjb2duaXRvOnVzZXJuYW1lIjoiMjRlMjY5MTAtZTdiOS00YWFkLWE5OTQtMzg3OTQyZjE2NGU3IiwiZXhwIjoxNTg3MzE1NDM4LCJpYXQiOjE1ODczMTE4MzgsImVtYWlsIjoibWF4QHNvdXRobGFuZS5jb20ifQ.GrlpeYQDwB81HjBZRkuqzw0ZXSGFBi_pbMoWC1QvHyPYrc6NRto02H4xgMls5OmCGa4bZBYWTT6wfo0bxuOLZDP__JRSfOyPUIbiAWTu1IiyAhbt3nlW1xSNSvf62xXQNveF9sPcvG2Gh6-0nFEUrAuI1a5QAVjXbp1YDDMr2TzrFrugW7zl2Ntzj42xWIq7P0R75S2JYVmBfhAxS6YNO1n8KpOFzxagxmn89leledx4PTxuOdWdmT6vZkW9q9QnOI9kjgUIxfWjx55205P4BwkOeqY7AN0j85LBwAHbhezfzNETybX1pwnMBh1p5_iLYgQMMZ60ZJseGl3cMRsPnQ'
+
+
+try {
+  const tokenPayload = await verifier.verify(token)
+} catch (e) {
+  if (e instanceof jwtErrors.JwtVerificationError) {
+    // token is malformed, invalid or expired
+    // act accordingly, e.g. return HTTP 401 error
+  }
+
+  throw e
+}
+```
+
+On successful verification `tokenPayload` will hold the body (payload) of the JWT:
+
+```json
+{
+  "at_hash": "BSEId5nF27zMrN9BLX-T_A",
+  "sub": "24e26910-e7b9-4aad-a994-387942f164e7",
+  "aud": "5ra91i9p4trq42m2vnjs0pv06q",
+  "event_id": "b6d7a62d-54da-49e6-a839-66506f0c21b5",
+  "token_use": "id",
+  "auth_time": 1587311838,
+  "iss": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_PDsy6i0Bf",
+  "name": "Max Ivanov",
+  "cognito:username": "24e26910-e7b9-4aad-a994-387942f164e7",
+  "exp": 1587315438,
+  "iat": 1587311838,
+  "email": "max@southlane.com"
+}
+```
+
+### Errors Thrown
+
+- `TypeError` on invalid input arguments.
+- `JwksFetchError` on failed https request to fetch JSON Web Key Set.
+- `JwksNoMatchingKeyError` on JWT referencing key which is missing in the key set.
+- `JwtVerificationError` on failed JWT verification.
+  Inspect error object's `originalError` property to find out verification error
+  details.
+
+Underlying Jose library may throw lower-level errors,
+like if you try to import invalid JWKS.
+<https://github.com/panva/jose/blob/master/docs/README.md#errors>.
+Those are not supposed to be thrown under normal course of operation and
+probably signify a programmer's error.
+
+### Leveraging Cache
+
+Verifier instance you get from `verifierFactory()` call has an internal JWKS cache
+to avoid hitting the network on subsequent calls.
+
+Make sure verifier instance is shared across `verifier.verify()` calls.
+
+## Running the Tests
+
+### Unit and Integration Tests
+
+Run tests:
+
+```sh
+npm run test
+```
+
+Run tests with coverage report:
+
+```sh
+npm run test-coverage
+```
+
+### Coding Style and Documentation Tests
+
+Make sure code has no syntax errors and is properly formatted.
+Make sure docs are valid Markdown.
+
+```sh
+npm run lint
+```
+
+### Security Tests
+
+Make sure there are no known vulnerabilities in dependencies.
+
+```sh
+npm run audit-security
+```
+
+## Built With / Dependencies
+
+- [Jose](https://github.com/panva/jose) - "JSON Web Almost Everything" -
+  JWA, JWS, JWE, JWK, JWT, JWKS for Node.js with minimal dependencies
+
+TODO text dependency tree
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of
+conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available,
+see the [releases on this repository](https://github.com/south-lane/cognito-jwt-verifier/releases).
+
+## Authors
+
+See the list of
+[contributors](https://github.com/south-lane/cognito-jwt-verifier/contributors)
+who participated in this project.
+
+## License
+
+This project is licensed under the MIT License -
+see the [LICENSE.md](LICENSE.md) file for details
