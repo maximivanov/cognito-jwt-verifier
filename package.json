@@ -27,7 +27,7 @@
     "lint": "run-p lint:*",
     "audit-security": "audit-ci --config ./audit-ci.json",
     "check-language": "write-good *.md --no-passive",
-    "publish": "git push --tags && npm publish --access public"
+    "publish-package": "git push --tags && npm publish --access public"
   },
   "files": [
     "src/**/*.js"
