@@ -153,7 +153,7 @@ npm run audit-security
   [mock-res](https://github.com/diachedelic/mock-res) - Testing, Mocking & Coverage
 - [ESLint](https://github.com/eslint/eslint),
   [Prettier](https://github.com/prettier/prettier),
-  [markdown-spellcheck](https://github.com/lukeapage/node-markdown-spellcheck),
+  [cspell](https://github.com/streetsidesoftware/cspell),
   [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli) -
   Linting & Formatting
 - [commitlint](https://github.com/conventional-changelog/commitlint),
@@ -181,7 +181,7 @@ conduct, and the process for submitting pull requests to us.
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available,
-see the [releases on this repository](https://github.com/south-lane/cognito-jwt-verifier/releases).
+see the [releases on this repository](https://github.com/maximivanov/cognito-jwt-verifier/releases).
 
 ## License
 
