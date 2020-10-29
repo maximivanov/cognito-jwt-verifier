@@ -34,14 +34,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/south-lane/cognito-jwt-verifier"
+    "url": "https://github.com/maximivanov/cognito-jwt-verifier"
   },
   "author": "Max Ivanov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/south-lane/cognito-jwt-verifier/issues"
+    "url": "https://github.com/maximivanov/cognito-jwt-verifier/issues"
   },
-  "homepage": "https://github.com/south-lane/cognito-jwt-verifier#readme",
+  "homepage": "https://github.com/maximivanov/cognito-jwt-verifier#readme",
   "dependencies": {
     "jose": "^1.26.0"
   },
