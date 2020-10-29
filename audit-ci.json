@@ -1,4 +1,4 @@
 {
     "moderate": true,
-    "whitelist": ["marked"]
+    "allowlist": ["marked"]
 }
