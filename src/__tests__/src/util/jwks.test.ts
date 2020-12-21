@@ -1,34 +1,28 @@
-'use strict'
+import https from 'https'
+import MockReq from 'mock-req'
+import MockRes from 'mock-res'
+import { fetchKeyStore } from '../../../util/jwks'
+import { JwksFetchError } from '../../../errors'
+import cognitoJwks from '../../fixtures/cognito-jwks.json'
+import { JWKS } from 'jose'
 
-const https = require('https')
-const sinon = require('sinon')
-const expect = require('chai').expect
-const MockReq = require('mock-req')
-const MockRes = require('mock-res')
-const { fetchKeyStore } = require('../../../src/util/jwks')
-const JwksFetchError = require('../../../src/errors/jwks-fetch-error')
-const cognitoJwks = require('../../fixtures/cognito-jwks.json')
-const {
-  JWKS: { KeyStore },
-} = require('jose')
-
-describe('util/jwks', async function () {
-  describe('fetchKeyStore()', async function () {
+describe('util/jwks', function () {
+  describe('fetchKeyStore()', function () {
     ;[
       { description: 'rejects on status code <200', code: 199 },
       { description: 'rejects on status code >299', code: 301 },
     ].forEach((test) => {
       it(test.description, async function () {
-        sinon.stub(https, 'get').yields({
-          statusCode: test.code,
+        https.get = jest.fn().mockImplementation((keyStoreUrl, cb) => {
+          cb({ statusCode: test.code })
         })
 
         try {
           await fetchKeyStore('https://...')
-          expect.fail('Unexpected success')
+          fail('Unexpected success')
         } catch (e) {
-          expect(e).to.be.an.instanceOf(JwksFetchError)
-          expect(e.message).to.match(
+          expect(e).toBeInstanceOf(JwksFetchError)
+          expect(e.message).toMatch(
             new RegExp(
               `Failed to fetch key set JSON: HTTP status code ${test.code}`,
             ),
@@ -40,15 +34,16 @@ describe('util/jwks', async function () {
     it('rejects on HTTP req module-triggered error', async function () {
       const req = new MockReq()
 
-      sinon.stub(https, 'get').returns(req)
+      // sinon.stub(https, 'get').returns(req)
+      https.get = jest.fn().mockImplementation(() => req)
 
       const promise = fetchKeyStore('https://...')
         .then(() => {
-          expect.fail('Unexpected success')
+          fail('Unexpected success')
         })
         .catch((e) => {
-          expect(e).to.be.an.instanceOf(JwksFetchError)
-          expect(e.message).to.match(
+          expect(e).toBeInstanceOf(JwksFetchError)
+          expect(e.message).toMatch(
             new RegExp(`Failed to fetch key set JSON: custom`),
           )
         })
@@ -61,15 +56,18 @@ describe('util/jwks', async function () {
       const req = new MockReq()
       const res = new MockRes()
 
-      sinon.stub(https, 'get').yields(res).returns(req)
+      https.get = jest.fn().mockImplementation((keyStoreUrl, cb) => {
+        cb(res)
+        return req
+      })
 
       const promise = fetchKeyStore('https://...')
         .then(() => {
-          expect.fail('Unexpected success')
+          fail('Unexpected success')
         })
         .catch((e) => {
-          expect(e).to.be.an.instanceOf(JwksFetchError)
-          expect(e.message).to.match(
+          expect(e).toBeInstanceOf(JwksFetchError)
+          expect(e.message).toMatch(
             new RegExp(`Cannot parse fetched JWKS JSON`),
           )
         })
@@ -84,15 +82,18 @@ describe('util/jwks', async function () {
       const req = new MockReq()
       const res = new MockRes()
 
-      sinon.stub(https, 'get').yields(res).returns(req)
+      https.get = jest.fn().mockImplementation((keyStoreUrl, cb) => {
+        cb(res)
+        return req
+      })
 
       const promise = fetchKeyStore('https://...')
         .then(() => {
-          expect.fail('Unexpected success')
+          fail('Unexpected success')
         })
         .catch((e) => {
-          expect(e).to.be.an.instanceOf(TypeError)
-          expect(e.message).to.match(
+          expect(e).toBeInstanceOf(TypeError)
+          expect(e.message).toMatch(
             new RegExp(`jwks must be a JSON Web Key Set formatted object`),
           )
         })
@@ -107,10 +108,13 @@ describe('util/jwks', async function () {
       const req = new MockReq()
       const res = new MockRes()
 
-      sinon.stub(https, 'get').yields(res).returns(req)
+      https.get = jest.fn().mockImplementation((keyStoreUrl, cb) => {
+        cb(res)
+        return req
+      })
 
       const promise = fetchKeyStore('https://...').then((jwksStore) => {
-        expect(jwksStore).to.be.an.instanceOf(KeyStore)
+        expect(jwksStore).toBeInstanceOf(JWKS.KeyStore)
       })
 
       res.write(JSON.stringify(cognitoJwks))

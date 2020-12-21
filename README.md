@@ -31,6 +31,11 @@ npm i @southlane/cognito-jwt-verifier
    Note **App Client ID** on the App Clients page.
 3. Fetch ID/access tokens. Either by making an AWS SDK / Amplify call
    or from a Hosted UI redirect.
+   3.1. (test flow for the Hosted UI and implicit flow) Create a new user in **General settings** / **Users and groups** / **Create user**.
+   3.2. Launch the Hosted UI: **App integration** / **App client settings** / **Launch Hosted UI**.
+   3.3. Enter login and password for the user you created. Set a new password.
+   3.4. Cognito will redirect you to the app's target URL (it doesn't have to resolve) and you can inspect ID and access tokens in the URL.
+   3.5. Use tokens to decode them at [jwt.io](https://jwt.io/) and/or test with this library.
 
 Now you can programmatically verify issued ID and access tokens:
 

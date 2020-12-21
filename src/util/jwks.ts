@@ -1,10 +1,8 @@
-'use strict'
+import https from 'https'
+import { JwksFetchError } from '../errors'
+import { JWKS } from 'jose'
 
-const https = require('https')
-const JwksFetchError = require('../errors/jwks-fetch-error')
-const { JWKS } = require('jose')
-
-async function fetchKeyStore(keyStoreUrl) {
+export async function fetchKeyStore(keyStoreUrl) {
   return new Promise((resolve, reject) => {
     const request = https.get(keyStoreUrl, (res) => {
       if (res.statusCode < 200 || res.statusCode > 299) {
@@ -36,8 +34,4 @@ async function fetchKeyStore(keyStoreUrl) {
 
     request.on('error', (err) => reject(new JwksFetchError(err.message)))
   })
-}
-
-module.exports = {
-  fetchKeyStore,
 }
