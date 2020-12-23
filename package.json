@@ -1,6 +1,6 @@
 {
   "name": "@southlane/cognito-jwt-verifier",
-  "version": "0.1.7",
+  "version": "1.0.0-beta.0",
   "description": "Decode and verify JWT tokens issued by AWS Cognito.",
   "keywords": [
     "aws",
