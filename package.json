@@ -21,16 +21,19 @@
     "test": "jest --verbose",
     "test-coverage": "jest --coverage",
     "format": "prettier --write '**/*.{js,css,json,md}'",
-    "lint:js": "eslint \"**/*.{js,jsx,}\"",
+    "lint:eslint": "eslint \"**/*.{ts,js}\" --max-warnings=0",
+    "lint:tsc": "tsc --noemit",
     "lint:markdown": "markdownlint *.md",
     "lint:spellcheck": "cspell --config=.cspell.json **/*.md",
     "lint": "run-p lint:*",
     "audit-security": "audit-ci --config ./audit-ci.json",
     "check-language": "write-good *.md --no-passive",
+    "build": "rm -rf dist && tsc",
+    "publish-preview": "npm publish --dry-run",
     "publish-package": "git push --tags && npm publish --access public"
   },
   "files": [
-    "src/**/*.js"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -43,7 +46,7 @@
   },
   "homepage": "https://github.com/maximivanov/cognito-jwt-verifier#readme",
   "dependencies": {
-    "jose": "^1.28.0"
+    "jose": "^3.5.0"
   },
   "husky": {
     "hooks": {
@@ -55,11 +58,13 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@types/jest": "^26.0.19",
     "@types/node": "^14.14.14",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
     "audit-ci": "^3.1.1",
     "cspell": "^4.1.2",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-prettier": "^3.3.0",
     "husky": "^4.3.0",
     "jest": "^26.6.3",
     "markdownlint-cli": "^0.24.0",

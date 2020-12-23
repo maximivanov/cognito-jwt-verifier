@@ -1,0 +1,15 @@
+{
+  "name": "test-cognito-jwt-verifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@southlane/cognito-jwt-verifier": "file:../cognito-jwt-verifier"
+  }
+}

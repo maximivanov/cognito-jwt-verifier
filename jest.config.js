@@ -5,4 +5,7 @@ module.exports = {
   restoreMocks: true,
   clearMocks: true,
   resetMocks: true,
+  moduleNameMapper: {
+    '^jose/(.*)$': 'jose/dist/node/cjs/$1',
+  },
 }

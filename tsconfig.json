@@ -3,10 +3,20 @@
     "module": "commonjs",
     "target": "es6",
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
+    "declaration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "index.ts"],
-  "exclude": ["node_modules", "src/__tests__"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/__tests__/**"]
 }

@@ -1,58 +1,40 @@
-const {
-  JWT,
-  errors: { JOSEError },
-} = require('jose')
-import { fetchKeyStore } from './util/jwks'
+import createRemoteJWKSet from 'jose/jwks/remote'
+import jwtVerify, { JWTPayload } from 'jose/jwt/verify'
+
 import { requireString } from './util/validators'
-import {
-  JwtVerificationError,
-  JwksNoMatchingKeyError,
-  JwtCognitoClaimValidationError,
-} from './errors'
+import { JwtCognitoClaimValidationError } from './errors'
 
-function handleVerificationError(e) {
-  if (
-    e instanceof JOSEError &&
-    ['ERR_JWT_CLAIM_INVALID', 'ERR_JWT_EXPIRED', 'ERR_JWT_MALFORMED'].includes(
-      e.code,
-    )
-  ) {
-    throw new JwtVerificationError(e)
-  }
-
-  if (isNoMatchingKeyError(e)) {
-    throw new JwksNoMatchingKeyError(e)
-  }
-
-  throw e
-}
-
-function isNoMatchingKeyError(e) {
-  return e instanceof JOSEError && e.code === 'ERR_JWKS_NO_MATCHING_KEY'
-}
-
-function validateTokenUseClaim(payload, tokenType) {
+function validateTokenUseClaim(payload: JWTPayload, tokenType: string) {
   if (!payload.token_use || payload.token_use !== tokenType) {
-    const originalError = new JwtCognitoClaimValidationError(
+    throw new JwtCognitoClaimValidationError(
       'token_use',
       `expected "${tokenType}", got "${payload.token_use}"`,
     )
-
-    throw new JwtVerificationError(originalError)
   }
 }
+
+type TokenType = 'id' | 'access'
+
+type VerifierFactoryOptions = {
+  region: string
+  userPoolId: string
+  appClientId: string
+  tokenType: TokenType
+}
+
+type VerifyFunction = (token: string) => JWTPayload
 
 export function verifierFactory({
   region,
   userPoolId,
   appClientId,
   tokenType,
-}) {
+}: VerifierFactoryOptions): VerifyFunction {
   requireString(region, 'region')
   requireString(userPoolId, 'userPoolId')
   requireString(appClientId, 'appClientId')
   if (!['id', 'access'].includes(tokenType)) {
-    throw new TypeError('"tokenType" must be either "id" or "access"')
+    throw new TypeError(`"tokenType" must be either "id" or "access"`)
   }
 
   const keyStoreUrl = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`
@@ -62,38 +44,14 @@ export function verifierFactory({
     issuer: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,
   }
 
-  let keyStore
+  const JWKS = createRemoteJWKSet(new URL(keyStoreUrl))
 
-  return {
-    verify: async (token) => {
-      requireString(token, 'token')
+  return async (token: string) => {
+    requireString(token, 'token')
 
-      const isCachedKeyStore = keyStore !== undefined
-      if (!isCachedKeyStore) {
-        keyStore = await fetchKeyStore(keyStoreUrl)
-      }
+    const { payload } = await jwtVerify(token, JWKS, joseOptions)
+    validateTokenUseClaim(payload, tokenType)
 
-      let payload
-
-      try {
-        payload = JWT.verify(token, keyStore, joseOptions)
-      } catch (e) {
-        if (isNoMatchingKeyError(e) && isCachedKeyStore) {
-          keyStore = await fetchKeyStore(keyStoreUrl)
-
-          try {
-            payload = JWT.verify(token, keyStore, joseOptions)
-          } catch (eAfterRefetch) {
-            handleVerificationError(e)
-          }
-        }
-
-        handleVerificationError(e)
-      }
-
-      validateTokenUseClaim(payload, tokenType)
-
-      return payload
-    },
+    return payload
   }
 }
