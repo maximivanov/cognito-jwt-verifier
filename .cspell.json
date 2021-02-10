@@ -2,5 +2,6 @@
   "version": "0.1",
   "language": "en",
   "ignoreRegExpList": ["/```[\\w\\W]*?```/"],
-  "words": ["JWKS", "commitlint", "southlane", "markdownlint"]
+  "ignorePaths": ["node_modules/**", "example/**"],
+  "words": ["JWKS", "commitlint", "southlane", "markdownlint", "runtimes"]
 }

@@ -1,6 +1,6 @@
 {
   "name": "@southlane/cognito-jwt-verifier",
-  "version": "0.1.7",
+  "version": "1.0.0-beta.0",
   "description": "Decode and verify JWT tokens issued by AWS Cognito.",
   "keywords": [
     "aws",
@@ -16,21 +16,24 @@
     "verify",
     "validate"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --config tests/.mocharc.yml",
-    "test-coverage": "nyc --reporter=html mocha --config tests/.mocharc.yml",
+    "test": "jest --verbose",
+    "test-coverage": "jest --coverage",
     "format": "prettier --write '**/*.{js,css,json,md}'",
-    "lint:js": "eslint \"**/*.{js,jsx,}\"",
+    "lint:eslint": "eslint \"**/*.{ts,js}\" --max-warnings=0",
+    "lint:tsc": "tsc --noemit",
     "lint:markdown": "markdownlint *.md",
     "lint:spellcheck": "cspell --config=.cspell.json **/*.md",
     "lint": "run-p lint:*",
     "audit-security": "audit-ci --config ./audit-ci.json",
     "check-language": "write-good *.md --no-passive",
+    "build": "rm -rf dist && tsc",
+    "publish-preview": "npm publish --dry-run",
     "publish-package": "git push --tags && npm publish --access public"
   },
   "files": [
-    "src/**/*.js"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -43,7 +46,7 @@
   },
   "homepage": "https://github.com/maximivanov/cognito-jwt-verifier#readme",
   "dependencies": {
-    "jose": "^1.28.0"
+    "jose": "^3.5.0"
   },
   "husky": {
     "hooks": {
@@ -53,21 +56,25 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@types/jest": "^26.0.19",
+    "@types/node": "^14.14.14",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
     "audit-ci": "^3.1.1",
-    "chai": "^4.2.0",
     "cspell": "^4.1.2",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-prettier": "^3.3.0",
     "husky": "^4.3.0",
+    "jest": "^26.6.3",
     "markdownlint-cli": "^0.24.0",
-    "mocha": "^8.2.0",
     "mock-req": "^0.2.0",
     "mock-res": "^0.5.0",
     "npm-run-all": "^4.1.5",
-    "nyc": "^15.1.0",
     "prettier": "^2.1.2",
-    "sinon": "^9.2.1",
+    "ts-jest": "^26.4.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3",
     "write-good": "^1.0.3"
   }
 }

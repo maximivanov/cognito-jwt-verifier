@@ -9,3 +9,5 @@ coverage/
 # IDE configuration
 .idea/
 .vscode/
+
+dist
