@@ -17,6 +17,7 @@
     "validate"
   ],
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "mocha --config tests/.mocharc.yml",
     "test-coverage": "nyc --reporter=html mocha --config tests/.mocharc.yml",
